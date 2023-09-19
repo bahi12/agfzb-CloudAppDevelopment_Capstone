@@ -1,0 +1,51 @@
+<div class="container">
+    <h1 class="text-center">Contact Us</h1>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Address</h3>
+        <p>
+          123 Main Street
+          Anytown, CA 12345
+        </p>
+      </div>
+
+      <div class="col-md-6">
+        <h3>Contact Information</h3>
+        <p>
+          Phone: <span id="random-telephone"></span>
+          Email: <span id="random-email"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate a random telephone number
+    function generateRandomTelephone() {
+      const telephoneNumbers = [
+        "(123) 456-7890",
+        "(456) 789-0123",
+        "(789) 012-3456"
+      ];
+
+      const randomNumber = Math.floor(Math.random() * telephoneNumbers.length);
+      return telephoneNumbers[randomNumber];
+    }
+
+    // Generate a random email address
+    function generateRandomEmail() {
+      const emailAddresses = [
+        "john.doe@example.com",
+        "jane.doe@example.com",
+        "peter.parker@example.com"
+      ];
+
+      const randomNumber = Math.floor(Math.random() * emailAddresses.length);
+      return emailAddresses[randomNumber];
+    }
+
+    // Set the random telephone and email address in the HTML
+    document.getElementById("random-telephone").textContent = generateRandomTelephone();
+    document.getElementById("random-email").textContent = generateRandomEmail();
+  </script>
