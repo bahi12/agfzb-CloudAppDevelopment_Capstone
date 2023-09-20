@@ -1,3 +1,5 @@
+{% extends "djangoapp/base.html" %} {% block title %}Home{% endblock title %} 
+{% block content%}
 <div class="container">
     <h1 class="text-center">Contact Us</h1>
 
@@ -49,3 +51,4 @@
     document.getElementById("random-telephone").textContent = generateRandomTelephone();
     document.getElementById("random-email").textContent = generateRandomEmail();
   </script>
+  {% endblock %}
