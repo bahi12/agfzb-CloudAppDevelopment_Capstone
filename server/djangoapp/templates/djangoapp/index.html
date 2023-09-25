@@ -1,5 +1,37 @@
 {% extends "djangoapp/base.html" %} {% block title %}Home{% endblock title %} 
 {% block content%}
+<script>
+    $(function() {
+      $('#table').bootstrapTable()
+    })
+</script>
 <!--Add a dealer table here -->
-<h1>Home page!</h1>
+<main role="main" class="container pt-3">
+    <h1 class="mt-2 mb-4">Dealerships</h1>
+    <table class="table" id="table" data-filter-control="true">
+        <thead>
+            <tr>
+                <th data-field="id" data-filter-control="select">ID</th>
+                <th data-field="full_name">Dealership Name</th>
+                <th data-field="city" data-filter-control="select">City</th>
+                <th data-field="address" data-filter-control="select">Address</th>
+                <th data-field="zip" data-filter-control="select">ZIP Code</th>
+                <th data-field="state" data-filter-control="select">State</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for dealer in dealership_list %}
+                <tr>
+                    <td>{{dealer.id}}</td>
+                    <td><a href="{% url 'djangoapp:dealer_details' dealer.id %}">{{dealer.full_name}}</a></td>
+                    <td>{{dealer.city}}</td>
+                    <td>{{dealer.address}}</td>
+                    <td>{{dealer.zip}}</td>
+                    <td>{{dealer.st}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
 {% endblock %}

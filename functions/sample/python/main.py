@@ -6,9 +6,14 @@ Returns:
 from cloudant.client import Cloudant
 from cloudant.error import CloudantException
 import requests
+import json
 
+with open("../../creds.json", "r") as f:
+  creds = json.load(f)
+#print(creds["COUCH_USERNAME"])
+#print(creds["IAM_API_KEY"])
 
-def main(param_dict):
+def main(creds):
     """Main Function
 
     Args:
@@ -19,9 +24,10 @@ def main(param_dict):
     """
 
     try:
+        
         client = Cloudant.iam(
-            account_name=param_dict["COUCH_USERNAME"],
-            api_key=param_dict["IAM_API_KEY"],
+            account_name=creds["COUCH_USERNAME"],
+            api_key=creds["IAM_API_KEY"],
             connect=True,
         )
         print(f"Databases: {client.all_dbs()}")
