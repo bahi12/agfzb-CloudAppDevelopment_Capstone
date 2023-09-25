@@ -2,16 +2,16 @@
  * Get all dealerships
  */
 
-const { CloudantV1 } = require('@ibm-cloud/cloudant');
+const { CloudantV1 } = require('@cloudant/cloudant');
 const { IamAuthenticator } = require('ibm-cloud-sdk-core');
 
 function main(params) {
 
-    const authenticator = new IamAuthenticator({ apikey: params.IAM_API_KEY })
+    const authenticator = new IamAuthenticator({ apikey: "ZYiv6q8przFhNmxJSWs5DqjrHKgCE9vEsrx_aGEOrwuo" })
     const cloudant = CloudantV1.newInstance({
       authenticator: authenticator
     });
-    cloudant.setServiceUrl(params.COUCH_URL);
+    cloudant.setServiceUrl("https://c7414ad6-c35f-46d0-ad48-ba9c5933788f-bluemix.cloudantnosqldb.appdomain.cloud");
 
     let dbListPromise = getDbs(cloudant);
     return dbListPromise;
