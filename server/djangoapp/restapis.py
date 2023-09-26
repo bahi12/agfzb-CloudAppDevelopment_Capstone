@@ -66,7 +66,7 @@ def get_dealer_from_cf_by_id(url, id):
     if json_result:
         dealers = json_result
         
-        dealer_doc = dealers[0] 
+        dealer_doc = dealers["doc"]
         dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],full_name=dealer_doc["full_name"],
                                 id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
                                 
@@ -84,7 +84,7 @@ def get_dealer_reviews_from_cf(url, **kwargs):
     # print(json_result)
     if json_result:
         print("line 105",json_result)
-        reviews = json_result["data"]["docs"]
+        reviews = json_result["data"]
         for dealer_review in reviews:
             review_obj = DealerReview(dealership=dealer_review["dealership"],
                                    name=dealer_review["name"],

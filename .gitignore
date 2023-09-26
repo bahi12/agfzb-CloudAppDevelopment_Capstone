@@ -141,3 +141,4 @@ server/djangoapp/migrations/
 server/djangoapp/migrations/
 
 functions/creds.json
+node_modules
