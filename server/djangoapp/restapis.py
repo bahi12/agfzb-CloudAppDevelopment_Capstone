@@ -7,6 +7,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
 import sys
 
+
 def get_request(url, **kwargs):
     print(kwargs)
     try:
@@ -51,7 +52,7 @@ def get_dealers_from_cf(url, **kwargs):
         # For each dealer object
         for dealer in dealers:
             dealer_doc = dealer["doc"]
-            #print('DEALER L54:', dealer_doc)
+            # print('DEALER L54:', dealer_doc)
             # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], full_name=dealer_doc["full_name"],
                                    id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
@@ -81,67 +82,73 @@ def get_dealer_from_cf_by_id(url, id):
     return None
 """
 
+
 def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
-    #print('restapis.py: | json_result from line 85',json_result)
+    # print('restapis.py: | json_result from line 85',json_result)
 
     if json_result:
-        index = id - 1
-        dealers = json_result[index]
-        dealer_doc = dealers['doc']
-        #print("DEALERBYID L91:", dealer_doc["id"], ":", dealer_doc["address"], dealer_doc["st"])
+
+        dealers = json_result
+        # print("This is LINE 91:", json_result)
+        dealer_doc = dealers[0]['doc']
+        # print("DEALERBYID L93:", dealer_doc["id"], ":", dealer_doc["address"], dealer_doc["st"])
         dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
-                                id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], full_name=dealer_doc["full_name"],
-                                
-                                st=dealer_doc["st"], zip=dealer_doc["zip"])
+                               id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], full_name=dealer_doc["full_name"],
+
+                               st=dealer_doc["st"], zip=dealer_doc["zip"])
     return dealer_obj
 
-def get_dealer_reviews_from_cf(url, dealership):
+
+def get_dealer_reviews_from_cf(url, id):
     results = []
     # Perform a GET request with the specified dealer id
-    json_result = get_request(url, id=dealership)
+    # print("RESULTS BEFORE", results)
+    json_result = get_request(url, id=id)
+    print("JSON Result:", json_result)  # Add this line for debugging
     if json_result:
         # Get all review data from the response
-        print('Warning: ')
-        print("L106:", json_result['data'])
         reviews = json_result["data"]["docs"]
         # For every review in the response
         for review in reviews:
             # Create a DealerReview object from the data
             # These values must be present
             review_content = review["review"]
-            id = review["id"]
+            # Use a different variable name for the review ID
+            review_id = review["id"]
             name = review["name"]
             purchase = review["purchase"]
             dealership = review["dealership"]
             try:
                 # These values may be missing
                 car_make = review["car_make"]
-                car_model = review["car_model"]           
+                car_model = review["car_model"]
                 car_year = review["car_year"]
                 purchase_date = review["purchase_date"]
                 # Creating a review object
-                review_obj = DealerReview(dealership=dealership, id=id, name=name, sentiment="",
-                                          purchase=purchase, review=review_content, car_make=car_make,
-                                          car_model=car_model, car_year=car_year, purchase_date=purchase_date)
+                review_obj = DealerReview(
+                    dealership=dealership, id=review_id, name=name, purchase=purchase, review=review_content,
+                    car_make=car_make, car_model=car_model, car_year=car_year, purchase_date=purchase_date)
             except KeyError:
                 print("Something is missing from this review. Using default values.")
                 # Creating a review object with some default values
                 review_obj = DealerReview(
-                    dealership=dealership, id=id, name=name, purchase=purchase, review=review_content)
+                    dealership=dealership, id=review_id, name=name, purchase=purchase, review=review_content)
+
             # Analysing the sentiment of the review object's review text and saving it to the object attribute "sentiment"
-            review_obj.sentiment = analyze_review_sentiments(review_obj.sentiment)
-            print(f"sentiment: {review_obj.sentiment}")
-            
+            review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            # print(f"sentiment: {review_obj.sentiment}")
+
             # Saving the review object to results
             results.append(review_obj)
-    return results    
+            # print("RESULTS AFTER", results)
 
+    return results
 
 
 def analyze_review_sentiments(dealer_review):
-    API_KEY = "79zvfO0hAunubsuWZID61KkTecQs29k-Z-4eNcPwSYhm"
-    NLU_URL = 'https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/351966a8-a214-4fc1-a319-ea7f066c002c'
+    API_KEY = "udjFrCBHWPyMk8TE3-8Q4wRAI7Gf_1Deg2y8g_hCA_2H"
+    NLU_URL = "https://api.au-syd.natural-language-understanding.watson.cloud.ibm.com/instances/ebe21a79-1029-47d3-bcba-2fbb9f943b44"
     authenticator = IAMAuthenticator(API_KEY)
     natural_language_understanding = NaturalLanguageUnderstandingV1(
         version='2021-08-01', authenticator=authenticator)
@@ -150,4 +157,4 @@ def analyze_review_sentiments(dealer_review):
         sentiment=SentimentOptions(targets=[dealer_review]))).get_result()
     label = json.dumps(response, indent=2)
     label = response['sentiment']['document']['label']
-    return(label)
+    return (label)

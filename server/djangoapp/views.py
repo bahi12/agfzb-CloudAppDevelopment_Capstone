@@ -3,7 +3,6 @@ from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, get_deale
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .restapis import get_dealers_from_cf, get_dealer_by_id_from_cf
-import json
 import logging
 from datetime import datetime
 from django.contrib import messages
@@ -19,15 +18,12 @@ sys.path.append('.')
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
-
 
 # Create an `about` view to render a static about page
 # def about(request):
 def about(request):
     return render(request, 'djangoapp/about.html')
-
 
 # Create a `contact` view to return a static contact page
 # def contact(request):
@@ -35,7 +31,6 @@ def contact(request):
     return render(request, 'djangoapp/contact_us.html')
 # Create a `login_request` view to handle sign in request
 # def login_request(request):
-
 
 def login_request(request):
     context = {}
@@ -52,14 +47,12 @@ def login_request(request):
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 
-
 def logout_request(request):
     logout(request)
     return redirect("djangoapp:index")
 
 # Create a `registration_request` view to handle sign up request
 # def registration_request(request):
-
 
 def registration_request(request):
     context = {}
@@ -88,7 +81,6 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 
-
 def get_dealerships(request):
     url = "https://us-south.functions.appdomain.cloud/api/v1/web/3cd318ff-d3b8-46d8-b5de-e37b3f6b0123/api/get-dealership"
     dealerships = get_dealers_from_cf(url)
@@ -107,6 +99,7 @@ def get_dealer_details(request, id):
         dealer_url = "https://us-south.functions.appdomain.cloud/api/v1/web/3cd318ff-d3b8-46d8-b5de-e37b3f6b0123/api/get-dealers"
         dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
         context["dealer"] = dealer
+        print("LINE102:", dealer)
 
         review_url = "https://us-south.functions.appdomain.cloud/api/v1/web/3cd318ff-d3b8-46d8-b5de-e37b3f6b0123/api/reviews"
         reviews = get_dealer_reviews_from_cf(review_url, id)

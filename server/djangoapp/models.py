@@ -17,8 +17,8 @@ class CarMake(models.Model):
     description = models.TextField()
 
     class Meta:
-        verbose_name =("Car Make")
-        verbose_name_plural =("Car Makes")
+        verbose_name = ("Car Make")
+        verbose_name_plural = ("Car Makes")
 
     def __str__(self):
         return self.name
@@ -26,9 +26,9 @@ class CarMake(models.Model):
     def get_absolute_url(self):
         return reverse("CarMake_detail", kwargs={"pk": self.pk})
 
-
     def get_absolute_url(self):
         return reverse("CarMake_detail", kwargs={"pk": self.pk})
+
 
 class CarTypeField(models.CharField):
     def get_choices(self):
@@ -43,24 +43,28 @@ class CarTypeField(models.CharField):
 # - Year (DateField)
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
+
+
 class CarModel(models.Model):
-    make = models.ForeignKey(CarMake , on_delete=models.CASCADE)
+    make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
     name = models.CharField(null=False, max_length=250)
     dealer_id = models.IntegerField()
     type = CarTypeField(max_length=255)
-    year = models.DateField(default=datetime.date.today().year)  
-      
+    year = models.DateField(default=datetime.date.today().year)
+
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name =("Car Model")
-        verbose_name_plural =("Car Models")
+        verbose_name = ("Car Model")
+        verbose_name_plural = ("Car Models")
 
     def get_absolute_url(self):
         return reverse("CarModel_detail", kwargs={"pk": self.pk})
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
+
+
 class CarDealer(models.Model):
     full_name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
@@ -74,19 +78,21 @@ class CarDealer(models.Model):
     def __str__(self):
         return self.full_name
 # <HINT> Create a plain Python class `DealerReview` to hold review data
+
+
 class DealerReview:
-    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year,sentiment, id):
-        self.dealership=dealership
-        self.name=name
-        self.purchase=purchase
-        self.review=review
-        self.purchase_date=purchase_date
-        self.car_make=car_make
-        self.car_model=car_model
-        self.car_year=car_year
-        self.sentiment=sentiment #Watson NLU service
-        self.id=id
+    def __init__(self, dealership, name, purchase, review, purchase_date, car_make, car_model, car_year, id, sentiment=None):
+        self.dealership = dealership
+        self.name = name
+        self.purchase = purchase
+        self.review = review
+        self.purchase_date = purchase_date
+        self.car_make = car_make
+        self.car_model = car_model
+        self.car_year = car_year
+        self.sentiment = sentiment  # Watson NLU service
+        self.id = id
 
     def __str__(self):
         return "Review: " + self.review +\
-                " Sentiment: " + self.sentiment
+            " Sentiment: " + self.sentiment
