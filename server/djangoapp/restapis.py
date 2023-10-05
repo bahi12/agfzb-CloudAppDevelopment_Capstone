@@ -5,7 +5,9 @@ from requests.auth import HTTPBasicAuth
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
-import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_request(url, **kwargs):
@@ -85,18 +87,18 @@ def get_dealer_from_cf_by_id(url, id):
 
 def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
-    # print('restapis.py: | json_result from line 85',json_result)
+    dealer_obj = None
 
     if json_result:
+        for dealer_data in json_result:
+            if 'doc' in dealer_data:
+                dealer_doc = dealer_data['doc']
+                dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
+                                       id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
+                                       full_name=dealer_doc["full_name"],
+                                       st=dealer_doc["st"], zip=dealer_doc["zip"])
+                break  # Exit the loop if a valid dealer is found
 
-        dealers = json_result
-        # print("This is LINE 91:", json_result)
-        dealer_doc = dealers[0]['doc']
-        # print("DEALERBYID L93:", dealer_doc["id"], ":", dealer_doc["address"], dealer_doc["st"])
-        dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
-                               id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], full_name=dealer_doc["full_name"],
-
-                               st=dealer_doc["st"], zip=dealer_doc["zip"])
     return dealer_obj
 
 
@@ -105,12 +107,15 @@ def get_dealer_reviews_from_cf(url, id):
     # Perform a GET request with the specified dealer id
     # print("RESULTS BEFORE", results)
     json_result = get_request(url, id=id)
-    print("JSON Result:", json_result)  # Add this line for debugging
+    # print("JSON Result:", json_result)  # Add this line for debugging
     if json_result:
         # Get all review data from the response
+
         reviews = json_result["data"]["docs"]
+        # print('L112:', reviews)
         # For every review in the response
         for review in reviews:
+            print("Review Data:", review)
             # Create a DealerReview object from the data
             # These values must be present
             review_content = review["review"]
@@ -133,7 +138,8 @@ def get_dealer_reviews_from_cf(url, id):
                 print("Something is missing from this review. Using default values.")
                 # Creating a review object with some default values
                 review_obj = DealerReview(
-                    dealership=dealership, id=review_id, name=name, purchase=purchase, review=review_content)
+                    dealership=dealership, id=review_id, name=name, purchase=purchase, review=review_content,
+                    car_make="N/A", car_model="N/A", car_year="N/A", purchase_date="N/A")
 
             # Analysing the sentiment of the review object's review text and saving it to the object attribute "sentiment"
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
