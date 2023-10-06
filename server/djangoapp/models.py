@@ -53,7 +53,7 @@ class CarModel(models.Model):
     name = models.CharField(max_length=250)
 
     # Dealer id, used to refer a dealer created in cloudant database
-    dealer_id = models.IntegerField()
+    id = models.IntegerField(default=1, primary_key=True)
 
     # Type of the car (choices argument provides limited options)
     CAR_TYPES = [
@@ -87,18 +87,32 @@ class CarModel(models.Model):
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 
 
-class CarDealer(models.Model):
-    full_name = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
-    st = models.CharField(max_length=255)
-    zip = models.CharField(max_length=255)
-    lat = models.FloatField()
-    long = models.FloatField()
-    short_name = models.CharField(max_length=255)
+class CarDealer:
+
+    def __init__(self, address, city, id, lat, long, st, zip, full_name):
+        # Dealer address
+        self.address = address
+        # Dealer city
+        self.city = city
+
+        # Dealer id
+        self.id = id
+        # Location lat
+        self.lat = lat
+        # Location long
+        self.long = long
+
+        # Dealer state
+        self.st = st
+        # Dealer zip
+        self.zip = zip
+
+        # Full name
+        self.full_name = full_name
 
     def __str__(self):
-        return self.full_name
+        return "Dealer name: " + self.full_name
+
 # <HINT> Create a plain Python class `DealerReview` to hold review data
 
 

@@ -58,7 +58,7 @@ def get_dealers_from_cf(url, **kwargs):
             # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], full_name=dealer_doc["full_name"],
                                    id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
-                                   short_name=dealer_doc["short_name"],
+
                                    st=dealer_doc["st"], zip=dealer_doc["zip"])
             results.append(dealer_obj)
     return results
@@ -88,17 +88,20 @@ def get_dealer_from_cf_by_id(url, id):
 def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
     dealer_obj = None
-
+    # print('JSON RESULT:', json_result)
+    dealer_doc = json_result
     if json_result:
         for dealer_data in json_result:
-            if 'doc' in dealer_data:
+            if dealer_data.get('doc', {}).get('id') == id:
                 dealer_doc = dealer_data['doc']
                 dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
                                        id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"],
                                        full_name=dealer_doc["full_name"],
                                        st=dealer_doc["st"], zip=dealer_doc["zip"])
                 break  # Exit the loop if a valid dealer is found
-
+            else:
+                print("DOC is not found!")
+    print('DEALER OBJ:', dealer_obj)
     return dealer_obj
 
 
@@ -115,7 +118,7 @@ def get_dealer_reviews_from_cf(url, id):
         # print('L112:', reviews)
         # For every review in the response
         for review in reviews:
-            print("Review Data:", review)
+            # print("Review Data:", review)
             # Create a DealerReview object from the data
             # These values must be present
             review_content = review["review"]
