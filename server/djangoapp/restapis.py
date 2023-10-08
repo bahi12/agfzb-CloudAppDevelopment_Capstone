@@ -88,7 +88,7 @@ def get_dealer_from_cf_by_id(url, id):
 def get_dealer_by_id_from_cf(url, id):
     json_result = get_request(url, id=id)
     dealer_obj = None
-    # print('JSON RESULT:', json_result)
+    print('JSON RESULT:', json_result)
     dealer_doc = json_result
     if json_result:
         for dealer_data in json_result:
@@ -162,7 +162,7 @@ def analyze_review_sentiments(dealer_review):
     natural_language_understanding = NaturalLanguageUnderstandingV1(
         version='2021-08-01', authenticator=authenticator)
     natural_language_understanding.set_service_url(NLU_URL)
-    response = natural_language_understanding.analyze(text=dealer_review, features=Features(
+    response = natural_language_understanding.analyze(text=dealer_review, language='en', features=Features(
         sentiment=SentimentOptions(targets=[dealer_review]))).get_result()
     label = json.dumps(response, indent=2)
     label = response['sentiment']['document']['label']
